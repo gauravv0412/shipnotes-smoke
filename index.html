@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ShipNotes — Weekly changelog emails your customers actually read</title>
+<meta name="description" content="Paste your changelog or connect your repo. Every Friday your customers get a beautiful 'what shipped this week' email, written for humans, not devs.">
+<meta property="og:title" content="ShipNotes — Weekly changelog emails your customers actually read">
+<meta property="og:description" content="Paste your changelog or connect your repo. Every Friday your customers get a beautiful 'what shipped this week' email, written for humans, not devs.">
+<meta property="og:type" content="website">
+<style>
+  :root {
+    --bg: #0b0d12;
+    --bg-alt: #12151c;
+    --card: #161a23;
+    --border: #262b38;
+    --text: #e9ecf3;
+    --text-dim: #9aa3b5;
+    --accent: #6fe3b4;
+    --accent-dim: #43a883;
+    --accent-2: #7c9cff;
+  }
+
+  * { box-sizing: border-box; }
+
+  html, body {
+    margin: 0;
+    padding: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  a { color: inherit; }
+
+  .wrap {
+    max-width: 1040px;
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+
+  header.nav {
+    padding: 24px 0;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .nav .wrap {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 700;
+    font-size: 18px;
+    letter-spacing: -0.02em;
+  }
+
+  .brand .dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 3px;
+    background: linear-gradient(135deg, var(--accent), var(--accent-2));
+    display: inline-block;
+  }
+
+  .btn {
+    display: inline-block;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 15px;
+    padding: 12px 22px;
+    border-radius: 10px;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+    border: 1px solid transparent;
+  }
+
+  .btn-primary {
+    background: linear-gradient(135deg, var(--accent), var(--accent-2));
+    color: #0b0d12;
+    box-shadow: 0 8px 24px -8px rgba(111, 227, 180, 0.45);
+  }
+
+  .btn-primary:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 12px 28px -8px rgba(111, 227, 180, 0.55);
+  }
+
+  .btn-small {
+    padding: 9px 16px;
+    font-size: 14px;
+  }
+
+  hero, .hero {
+    display: block;
+  }
+
+  .hero {
+    padding: 88px 0 64px;
+    text-align: center;
+  }
+
+  .kicker {
+    display: inline-block;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--accent);
+    background: rgba(111, 227, 180, 0.1);
+    border: 1px solid rgba(111, 227, 180, 0.25);
+    padding: 6px 14px;
+    border-radius: 999px;
+    margin-bottom: 24px;
+    letter-spacing: 0.02em;
+  }
+
+  h1 {
+    font-size: 52px;
+    line-height: 1.08;
+    letter-spacing: -0.03em;
+    margin: 0 0 20px;
+  }
+
+  .hero p.sub {
+    font-size: 20px;
+    color: var(--text-dim);
+    max-width: 620px;
+    margin: 0 auto 36px;
+  }
+
+  .hero-ctas {
+    display: flex;
+    justify-content: center;
+    gap: 14px;
+    flex-wrap: wrap;
+  }
+
+  .hero-note {
+    margin-top: 16px;
+    font-size: 13px;
+    color: var(--text-dim);
+  }
+
+  section {
+    padding: 64px 0;
+    border-top: 1px solid var(--border);
+  }
+
+  h2 {
+    font-size: 32px;
+    letter-spacing: -0.02em;
+    margin: 0 0 12px;
+    text-align: center;
+  }
+
+  .section-sub {
+    text-align: center;
+    color: var(--text-dim);
+    font-size: 16px;
+    max-width: 560px;
+    margin: 0 auto 48px;
+  }
+
+  .benefits {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+  }
+
+  .benefit {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 28px;
+  }
+
+  .benefit .icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    background: rgba(111, 227, 180, 0.12);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    margin-bottom: 18px;
+  }
+
+  .benefit h3 {
+    font-size: 18px;
+    margin: 0 0 10px;
+    letter-spacing: -0.01em;
+  }
+
+  .benefit p {
+    margin: 0;
+    color: var(--text-dim);
+    font-size: 15px;
+  }
+
+  /* Email sample */
+  .email-preview {
+    max-width: 560px;
+    margin: 0 auto;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 24px 60px -24px rgba(0, 0, 0, 0.6);
+  }
+
+  .email-chrome {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 14px 18px;
+    background: var(--bg-alt);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .email-chrome span {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: #3a3f4d;
+  }
+
+  .email-meta {
+    padding: 20px 24px 0;
+    font-size: 13px;
+    color: var(--text-dim);
+  }
+
+  .email-meta .subject {
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--text);
+    margin: 6px 0 2px;
+  }
+
+  .email-body {
+    padding: 20px 24px 28px;
+  }
+
+  .email-hero-line {
+    font-size: 15px;
+    color: var(--text-dim);
+    margin: 0 0 20px;
+  }
+
+  .email-item {
+    display: flex;
+    gap: 12px;
+    padding: 14px 0;
+    border-top: 1px solid var(--border);
+  }
+
+  .email-item:first-of-type {
+    border-top: none;
+  }
+
+  .tag {
+    flex-shrink: 0;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    padding: 4px 8px;
+    border-radius: 6px;
+    height: fit-content;
+  }
+
+  .tag-new { background: rgba(111, 227, 180, 0.15); color: var(--accent); }
+  .tag-improved { background: rgba(124, 156, 255, 0.15); color: var(--accent-2); }
+  .tag-fixed { background: rgba(255, 178, 107, 0.15); color: #ffb26b; }
+
+  .email-item h4 {
+    margin: 0 0 4px;
+    font-size: 15px;
+  }
+
+  .email-item p {
+    margin: 0;
+    font-size: 13.5px;
+    color: var(--text-dim);
+  }
+
+  .email-footer {
+    padding: 18px 24px;
+    background: var(--bg-alt);
+    border-top: 1px solid var(--border);
+    font-size: 12px;
+    color: var(--text-dim);
+    text-align: center;
+  }
+
+  .cta-section {
+    text-align: center;
+  }
+
+  .cta-section h2 {
+    margin-bottom: 14px;
+  }
+
+  .cta-section .section-sub {
+    margin-bottom: 32px;
+  }
+
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 32px 0 40px;
+    text-align: center;
+    color: var(--text-dim);
+    font-size: 13px;
+  }
+
+  footer .validation {
+    margin-top: 6px;
+    opacity: 0.7;
+  }
+
+  @media (max-width: 860px) {
+    .benefits {
+      grid-template-columns: 1fr;
+    }
+    h1 { font-size: 40px; }
+  }
+
+  @media (max-width: 480px) {
+    .hero { padding: 56px 0 48px; }
+    h1 { font-size: 32px; }
+    .hero p.sub { font-size: 17px; }
+    h2 { font-size: 26px; }
+    .nav .btn-small { padding: 8px 12px; font-size: 13px; }
+    .email-meta, .email-body, .email-footer { padding-left: 16px; padding-right: 16px; }
+  }
+
+  @media (max-width: 360px) {
+    .wrap { padding: 0 14px; }
+    h1 { font-size: 28px; }
+    .hero p.sub { font-size: 15px; }
+    .btn { padding: 10px 16px; font-size: 14px; }
+    .brand { font-size: 16px; }
+  }
+</style>
+</head>
+<body>
+
+<header class="nav">
+  <div class="wrap">
+    <div class="brand"><span class="dot"></span>ShipNotes</div>
+    <a class="btn btn-primary btn-small" href="mailto:gaurav.verma0412+shipnotes@gmail.com?subject=ShipNotes%20waitlist">Join the waitlist</a>
+  </div>
+</header>
+
+<main>
+  <section class="hero">
+    <div class="wrap">
+      <span class="kicker">Changelogs → beautiful weekly emails</span>
+      <h1>Turn your changelog into an email<br>customers actually want to open.</h1>
+      <p class="sub">Paste your changelog or connect your repo. Every Friday your customers get a beautiful "what shipped this week" email, written for humans, not devs.</p>
+      <div class="hero-ctas">
+        <a class="btn btn-primary" href="mailto:gaurav.verma0412+shipnotes@gmail.com?subject=ShipNotes%20waitlist">Join the waitlist</a>
+      </div>
+      <p class="hero-note">No spam. One email when we launch. Unsubscribe anytime.</p>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap">
+      <h2>Why teams switch to ShipNotes</h2>
+      <p class="section-sub">Your engineers already write the changelog. We turn it into something your customers will actually read.</p>
+      <div class="benefits">
+        <div class="benefit">
+          <div class="icon">✍️</div>
+          <h3>Human-readable, automatically</h3>
+          <p>We translate dry commit messages and PR titles into plain-English summaries — no more "fix null pointer in auth service."</p>
+        </div>
+        <div class="benefit">
+          <div class="icon">📬</div>
+          <h3>Sent every Friday, on autopilot</h3>
+          <p>Connect once and forget it. ShipNotes compiles the week's shipped work and sends it out — no more scrambling to write an update.</p>
+        </div>
+        <div class="benefit">
+          <div class="icon">📈</div>
+          <h3>Built to drive engagement</h3>
+          <p>Clean, scannable design with clear "New / Improved / Fixed" tags keeps customers opening your emails week after week.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap">
+      <h2>What your customers will see</h2>
+      <p class="section-sub">A real preview of the weekly email — styled, tagged, and ready to send.</p>
+
+      <div class="email-preview">
+        <div class="email-chrome">
+          <span></span><span></span><span></span>
+        </div>
+        <div class="email-meta">
+          From: ShipNotes &lt;updates@yourcompany.com&gt;
+          <div class="subject">🚀 What shipped this week at Acme</div>
+        </div>
+        <div class="email-body">
+          <p class="email-hero-line">Hey there — here's everything the team shipped for you between Jun 29 – Jul 4.</p>
+
+          <div class="email-item">
+            <span class="tag tag-new">New</span>
+            <div>
+              <h4>Dark mode for the dashboard</h4>
+              <p>Switch themes from Settings → Appearance. Your eyes will thank you at 2am.</p>
+            </div>
+          </div>
+
+          <div class="email-item">
+            <span class="tag tag-improved">Improved</span>
+            <div>
+              <h4>Search is now 3x faster</h4>
+              <p>Large workspaces will notice results appear almost instantly.</p>
+            </div>
+          </div>
+
+          <div class="email-item">
+            <span class="tag tag-fixed">Fixed</span>
+            <div>
+              <h4>Exports no longer time out</h4>
+              <p>Large CSV exports over 50k rows now complete reliably.</p>
+            </div>
+          </div>
+        </div>
+        <div class="email-footer">Sent with ShipNotes — turning changelogs into customer love, every Friday.</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="cta-section">
+    <div class="wrap">
+      <h2>Ready for Fridays your customers look forward to?</h2>
+      <p class="section-sub">Join the waitlist and be first in line when we launch.</p>
+      <a class="btn btn-primary" href="mailto:gaurav.verma0412+shipnotes@gmail.com?subject=ShipNotes%20waitlist">Join the waitlist</a>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div>ShipNotes — weekly changelog emails, written for humans.</div>
+    <div class="validation">A HELM validation page</div>
+  </div>
+</footer>
+
+</body>
+</html>
