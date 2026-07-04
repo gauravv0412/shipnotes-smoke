@@ -353,7 +353,7 @@
 <header class="nav">
   <div class="wrap">
     <div class="brand"><span class="dot"></span>ShipNotes</div>
-    <a class="btn btn-primary btn-small" href="mailto:gaurav.verma0412+shipnotes@gmail.com?subject=ShipNotes%20waitlist">Join the waitlist</a>
+    <a class="btn btn-primary btn-small" href="#join">Join the waitlist</a>
   </div>
 </header>
 
@@ -364,7 +364,12 @@
       <h1>Turn your changelog into an email<br>customers actually want to open.</h1>
       <p class="sub">Paste your changelog or connect your repo. Every Friday your customers get a beautiful "what shipped this week" email, written for humans, not devs.</p>
       <div class="hero-ctas">
-        <a class="btn btn-primary" href="mailto:gaurav.verma0412+shipnotes@gmail.com?subject=ShipNotes%20waitlist">Join the waitlist</a>
+        <form class="wl-form" onsubmit="return wlJoin(event)">
+        <input type="email" name="email" required placeholder="you@company.com" aria-label="Your email" />
+        <input class="wl-hp" type="text" name="website" tabindex="-1" autocomplete="off" />
+        <button type="submit" class="btn btn-primary">Join the waitlist</button>
+        <div class="wl-msg" role="status"></div>
+      </form>
       </div>
       <p class="hero-note">No spam. One email when we launch. Unsubscribe anytime.</p>
     </div>
@@ -439,11 +444,16 @@
     </div>
   </section>
 
-  <section class="cta-section">
+  <section class="cta-section" id="join">
     <div class="wrap">
       <h2>Ready for Fridays your customers look forward to?</h2>
       <p class="section-sub">Join the waitlist and be first in line when we launch.</p>
-      <a class="btn btn-primary" href="mailto:gaurav.verma0412+shipnotes@gmail.com?subject=ShipNotes%20waitlist">Join the waitlist</a>
+      <form class="wl-form" onsubmit="return wlJoin(event)">
+        <input type="email" name="email" required placeholder="you@company.com" aria-label="Your email" />
+        <input class="wl-hp" type="text" name="website" tabindex="-1" autocomplete="off" />
+        <button type="submit" class="btn btn-primary">Join the waitlist</button>
+        <div class="wl-msg" role="status"></div>
+      </form>
     </div>
   </section>
 </main>
@@ -455,5 +465,26 @@
   </div>
 </footer>
 
+<style>
+.wl-form{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:14px}
+.wl-form input[type=email]{padding:12px 16px;border-radius:8px;border:1px solid rgba(255,255,255,.22);background:rgba(255,255,255,.06);color:inherit;min-width:250px;font-size:15px;outline:none}
+.wl-form input[type=email]:focus{border-color:rgba(255,255,255,.5)}
+.wl-hp{position:absolute;left:-9999px;opacity:0;height:0;width:0}
+.wl-msg{width:100%;font-size:13px;margin-top:6px;opacity:.85}
+</style>
+<script>
+(function(){try{if(!sessionStorage.getItem("sn_v")){sessionStorage.setItem("sn_v","1");
+fetch("https://helm-waitlist.onrender.com/visit",{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({source:"shipnotes"})}).catch(function(){});}}catch(e){}})();
+function wlJoin(ev){ev.preventDefault();var f=ev.target,btn=f.querySelector("button"),msg=f.querySelector(".wl-msg");
+var email=f.email.value.trim();if(!email)return false;btn.disabled=true;btn.textContent="Joining\u2026";
+msg.textContent="(first join of the day can take ~30s while the list wakes up)";
+var ctl=new AbortController();var t=setTimeout(function(){ctl.abort()},45000);
+fetch("https://helm-waitlist.onrender.com/join",{method:"POST",headers:{"content-type":"application/json"},signal:ctl.signal,
+body:JSON.stringify({email:email,source:"shipnotes",website:f.website.value})}).then(function(r){return r.json()}).then(function(j){
+clearTimeout(t);if(j.ok){f.innerHTML="<div class=\"wl-msg\" style=\"font-size:16px\">You\u2019re on the list. \u2713 Watch for Friday.</div>";}
+else{msg.textContent=j.error||"That didn\u2019t work \u2014 try again?";btn.disabled=false;btn.textContent="Join the waitlist";}
+}).catch(function(){clearTimeout(t);msg.textContent="The list didn\u2019t answer \u2014 try once more.";btn.disabled=false;btn.textContent="Join the waitlist";});
+return false;}
+</script>
 </body>
 </html>
